@@ -36,6 +36,10 @@ yarn-error.log*
 # vercel
 .vercel
 
+# material de referência (prints do Instagram usados só para redigir o
+# conteúdo — não faz parte do site, não precisa ir para o repositório)
+/reference
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts
