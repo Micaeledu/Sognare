@@ -7,9 +7,19 @@ import { gsap, ScrollTrigger } from "@/lib/gsap";
 import { useLightbox } from "./Lightbox";
 import type { ImageAsset } from "@/lib/media";
 
+// Com poucas fotos, um grid fixo de 3-4 colunas deixa buracos vazios
+// estranhos. Com 3 ou menos, mostra cards maiores e centralizados; com mais
+// fotos, cai no grid normal preenchendo a largura toda.
+function cardWidthClass(count: number) {
+  if (count <= 2) return "w-full sm:w-[calc(50%-0.5rem)]";
+  if (count === 3) return "w-[calc(50%-0.375rem)] sm:w-[calc(33.333%-0.667rem)]";
+  return "w-[calc(50%-0.375rem)] sm:w-[calc(33.333%-0.667rem)] lg:w-[calc(25%-0.75rem)]";
+}
+
 export function Gallery({ images }: { images: ImageAsset[] }) {
   const { open } = useLightbox();
   const containerRef = useRef<HTMLDivElement>(null);
+  const isSmallSet = images.length <= 3;
 
   useGSAP(
     () => {
@@ -46,7 +56,9 @@ export function Gallery({ images }: { images: ImageAsset[] }) {
             em <code className="mx-1">public/media/images</code>.
           </div>
         ) : (
-          <div className="mt-12 grid grid-cols-2 gap-3 md:grid-cols-3 md:gap-4">
+          <div
+            className={`mt-12 flex flex-wrap gap-3 md:gap-4 ${isSmallSet ? "justify-center" : ""}`}
+          >
             {images.map((image) => (
               <button
                 key={image.src}
@@ -67,9 +79,7 @@ export function Gallery({ images }: { images: ImageAsset[] }) {
                     </div>,
                   )
                 }
-                className={`gallery-card group relative block aspect-square w-full overflow-hidden bg-beige ${
-                  image.shape === "portrait" ? "row-span-2" : ""
-                }`}
+                className={`gallery-card group relative aspect-square overflow-hidden bg-beige ${cardWidthClass(images.length)}`}
               >
                 <Image
                   src={image.src}
