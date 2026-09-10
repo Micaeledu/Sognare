@@ -26,7 +26,7 @@ export default function Home() {
         />
         <CredibilityBar />
         <Gallery images={media.gallery} />
-        <Services />
+        <Services images={media.gallery} />
         <Process />
         <About portrait={media.founderPhoto} videos={media.videos} />
         <Testimonials serviceImage={media.serviceImage} />
