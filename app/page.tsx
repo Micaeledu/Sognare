@@ -7,6 +7,8 @@ import { Services } from "@/components/Services";
 import { Process } from "@/components/Process";
 import { About } from "@/components/About";
 import { Testimonials } from "@/components/Testimonials";
+import { InstagramSection } from "@/components/InstagramSection";
+import { Faq } from "@/components/Faq";
 import { FinalCta } from "@/components/FinalCta";
 import { Footer } from "@/components/Footer";
 
@@ -27,7 +29,9 @@ export default function Home() {
         <Services />
         <Process />
         <About portrait={media.founderPhoto} videos={media.videos} />
-        <Testimonials avaliacoes={media.avaliacoes} />
+        <Testimonials serviceImage={media.serviceImage} />
+        <InstagramSection />
+        <Faq />
         <FinalCta />
       </main>
       <Footer />

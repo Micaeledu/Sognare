@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { aboutContent, brand } from "@/content/site";
+import { aboutContent } from "@/content/site";
 import type { ImageAsset, VideoAsset } from "@/lib/media";
 import { useLightbox } from "./Lightbox";
 import { Reveal } from "./Reveal";
@@ -79,10 +79,7 @@ export function About({
         </Reveal>
 
         <Reveal delay={0.1}>
-          <p className="text-xs uppercase tracking-[0.3em] text-tan">
-            O ateliê
-          </p>
-          <h2 className="mt-3 font-display text-3xl text-navy md:text-4xl">
+          <h2 className="font-display text-3xl text-navy md:text-4xl">
             {aboutContent.title}
           </h2>
           {aboutContent.paragraphs.map((p) => (
@@ -99,9 +96,6 @@ export function About({
 
           {videos.length > 0 && (
             <div className="mt-8">
-              <p className="mb-3 text-xs uppercase tracking-widest text-stone">
-                {brand.founderName} fala sobre a {brand.name}
-              </p>
               <div className="flex gap-3">
                 {videos.map((video, i) => (
                   <VideoCard

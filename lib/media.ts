@@ -103,63 +103,76 @@ export type SiteMedia = {
   avaliacoes: ImageAsset[];
   /** foto do fundador/ateliê para a seção Sobre (convenção de nome opcional) */
   founderPhoto: ImageAsset | null;
+  /** imagem de serviço ao lado do carrossel de depoimentos (convenção de nome opcional) */
+  serviceImage: ImageAsset | null;
   videos: VideoAsset[];
 };
 
 /**
- * Convenção opcional: arquivos cujo nome contém "fundador", "sobre" ou
- * "ateliê/atelie" são tratados como foto da seção Sobre em vez de entrarem
- * na galeria genérica de projetos. Totalmente opcional — sem nenhum arquivo
- * assim, tudo continua caindo na distribuição automática por proporção.
+ * Convenções de nome de arquivo opcionais para direcionar uma imagem/vídeo a
+ * uma seção específica em vez de cair na distribuição automática por
+ * proporção. Nenhuma delas é obrigatória — sem arquivo algum com esses
+ * termos no nome, tudo continua funcionando pela heurística de proporção.
  */
 const ABOUT_PHOTO_HINTS = ["fundador", "sobre", "atelie", "ateliê"];
-
-function isAboutPhoto(filename: string) {
-  const lower = filename.toLowerCase();
-  return ABOUT_PHOTO_HINTS.some((hint) => lower.includes(hint));
-}
-
-/**
- * Convenção opcional: um vídeo cujo nome contenha "hero" ou "loop" é tratado
- * como b-roll ambiente (silencioso, em loop, fundo do hero). Qualquer outro
- * vídeo é tratado como depoimento/institucional falado — vira card clicável
- * que toca com som, em vez de virar fundo mudo (o que perderia a fala).
- */
+const HERO_IMAGE_HINTS = ["hero"];
+const SERVICE_IMAGE_HINTS = ["servico", "serviço", "destaque"];
 const HERO_VIDEO_HINTS = ["hero", "loop"];
 
-function isHeroVideo(filename: string) {
+function matchesHint(filename: string, hints: string[]) {
   const lower = filename.toLowerCase();
-  return HERO_VIDEO_HINTS.some((hint) => lower.includes(hint));
+  return hints.some((hint) => lower.includes(hint));
 }
 
 /**
  * Distribui as mídias encontradas em `public/media` pelas seções do site,
- * sem depender de nome de arquivo fixo (exceto a convenção opcional acima).
- * A imagem mais larga vira destaque do hero (ou fundo do hero, se não houver
- * vídeo); as demais alimentam a galeria e as faixas de seção. Nunca lança
- * erro se as pastas estiverem vazias — quem consome o manifesto decide o
- * fallback visual (bloco sólido da paleta).
+ * sem depender de nome de arquivo fixo (exceto as convenções opcionais
+ * acima). Prioridade do fundo do hero: imagem com "hero" no nome > vídeo
+ * ambiente (nome com "hero"/"loop") > imagem mais larga disponível > bloco
+ * sólido da paleta. Nunca lança erro se as pastas estiverem vazias.
  */
 export function getSiteMedia(): SiteMedia {
   const allImages = getImageManifest();
   const allVideos = getVideoManifest();
   const avaliacoes = getAvaliacaoManifest();
 
-  const aboutPhotos = allImages.filter((img) => isAboutPhoto(img.filename));
+  const aboutPhotos = allImages.filter((img) => matchesHint(img.filename, ABOUT_PHOTO_HINTS));
   const founderPhoto =
     [...aboutPhotos].sort((a, b) => b.width - a.width)[0] ?? null;
 
-  const images = allImages.filter((img) => img !== founderPhoto && !aboutPhotos.includes(img));
+  const heroTaggedImage =
+    allImages.find((img) => matchesHint(img.filename, HERO_IMAGE_HINTS)) ?? null;
 
-  const heroVideo = allVideos.find((v) => isHeroVideo(v.filename)) ?? null;
-  const videos = allVideos.filter((v) => v !== heroVideo);
+  const serviceImage =
+    allImages.find((img) => matchesHint(img.filename, SERVICE_IMAGE_HINTS)) ?? null;
+
+  const reserved = new Set([founderPhoto, heroTaggedImage, serviceImage].filter(Boolean));
+  const images = allImages.filter((img) => !reserved.has(img));
+
+  // Um vídeo mudo/loop ambiente (nome com "hero"/"loop") nunca entra no
+  // grupo de vídeos falados/clicáveis — só vira fundo do hero se não houver
+  // imagem explícita para isso (vídeo falado nunca é usado mudo, perderia a
+  // mensagem).
+  const ambientVideo =
+    allVideos.find((v) => matchesHint(v.filename, HERO_VIDEO_HINTS)) ?? null;
+  const heroVideo = heroTaggedImage ? null : ambientVideo;
+  const videos = allVideos.filter((v) => v !== ambientVideo);
 
   const sortedByWidth = [...images].sort((a, b) => b.ratio - a.ratio);
-  const heroImage = heroVideo ? null : (sortedByWidth[0] ?? null);
+  const heroImage = heroTaggedImage ?? (heroVideo ? null : (sortedByWidth[0] ?? null));
 
   const remaining = sortedByWidth.filter((img) => img !== heroImage);
   const banners = remaining.filter((img) => img.shape === "wide");
   const gallery = remaining.filter((img) => img.shape !== "wide");
 
-  return { heroImage, heroVideo, banners, gallery, avaliacoes, founderPhoto, videos };
+  return {
+    heroImage,
+    heroVideo,
+    banners,
+    gallery,
+    avaliacoes,
+    founderPhoto,
+    serviceImage,
+    videos,
+  };
 }

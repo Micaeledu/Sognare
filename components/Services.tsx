@@ -1,34 +1,64 @@
+"use client";
+
+import { useRef } from "react";
+import { useGSAP } from "@gsap/react";
+import { gsap, ScrollTrigger } from "@/lib/gsap";
 import { services } from "@/content/site";
-import { Reveal } from "./Reveal";
 
 export function Services() {
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useGSAP(
+    () => {
+      const mm = gsap.matchMedia();
+      mm.add("(prefers-reduced-motion: no-preference)", () => {
+        gsap.set(".service-card", { opacity: 0, y: 16 });
+        ScrollTrigger.batch(".service-card", {
+          start: "top 85%",
+          onEnter: (batch) =>
+            gsap.to(batch, {
+              opacity: 1,
+              y: 0,
+              duration: 0.6,
+              stagger: 0.12,
+              ease: "power2.out",
+            }),
+        });
+        gsap.set(".service-line", { scaleX: 0 });
+        ScrollTrigger.batch(".service-line", {
+          start: "top 85%",
+          onEnter: (batch) =>
+            gsap.to(batch, {
+              scaleX: 1,
+              duration: 0.7,
+              stagger: 0.12,
+              ease: "power2.out",
+            }),
+        });
+      });
+      return () => mm.revert();
+    },
+    { scope: containerRef },
+  );
+
   return (
     <section className="bg-navy py-24 text-cream">
-      <div className="mx-auto max-w-6xl px-6 md:px-10">
-        <Reveal>
-          <p className="text-xs uppercase tracking-[0.3em] text-tan-light">
-            O que fazemos
-          </p>
-          <h2 className="mt-3 max-w-xl font-display text-3xl md:text-4xl">
-            Marcenaria sob medida para cada ambiente
-          </h2>
-        </Reveal>
+      <div ref={containerRef} className="mx-auto max-w-6xl px-6 md:px-10">
+        <h2 className="max-w-xl font-display text-3xl md:text-4xl">
+          Marcenaria sob medida para cada ambiente
+        </h2>
 
-        <div className="mt-14 grid grid-cols-1 gap-px bg-cream/10 sm:grid-cols-2 lg:grid-cols-3">
-          {services.map((service, i) => (
-            <Reveal key={service.title} delay={(i % 3) * 0.08}>
-              <div className="h-full bg-navy p-8">
-                <span className="font-display text-sm text-tan-light">
-                  {String(i + 1).padStart(2, "0")}
-                </span>
-                <h3 className="mt-4 font-display text-xl text-cream">
-                  {service.title}
-                </h3>
-                <p className="mt-3 text-sm leading-relaxed text-cream/70">
-                  {service.description}
-                </p>
-              </div>
-            </Reveal>
+        <div className="mt-14 grid grid-cols-1 gap-x-10 gap-y-12 sm:grid-cols-2 lg:grid-cols-3">
+          {services.map((service) => (
+            <div key={service.title} className="service-card">
+              <div className="service-line h-px w-10 origin-left bg-tan" />
+              <h3 className="mt-5 font-display text-xl text-cream">
+                {service.title}
+              </h3>
+              <p className="mt-3 text-sm leading-relaxed text-cream/70">
+                {service.description}
+              </p>
+            </div>
           ))}
         </div>
       </div>

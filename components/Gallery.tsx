@@ -1,24 +1,44 @@
 "use client";
 
+import { useRef } from "react";
 import Image from "next/image";
+import { useGSAP } from "@gsap/react";
+import { gsap, ScrollTrigger } from "@/lib/gsap";
 import { useLightbox } from "./Lightbox";
-import { Reveal } from "./Reveal";
 import type { ImageAsset } from "@/lib/media";
 
 export function Gallery({ images }: { images: ImageAsset[] }) {
   const { open } = useLightbox();
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useGSAP(
+    () => {
+      const mm = gsap.matchMedia();
+      mm.add("(prefers-reduced-motion: no-preference)", () => {
+        gsap.set(".gallery-card", { opacity: 0, scale: 0.96 });
+        ScrollTrigger.batch(".gallery-card", {
+          start: "top 88%",
+          onEnter: (batch) =>
+            gsap.to(batch, {
+              opacity: 1,
+              scale: 1,
+              duration: 0.5,
+              stagger: 0.08,
+              ease: "power2.out",
+            }),
+        });
+      });
+      return () => mm.revert();
+    },
+    { scope: containerRef, dependencies: [images.length] },
+  );
 
   return (
     <section id="projetos" className="bg-cream py-24">
-      <div className="mx-auto max-w-6xl px-6 md:px-10">
-        <Reveal>
-          <p className="text-xs uppercase tracking-[0.3em] text-tan">
-            Portfólio
-          </p>
-          <h2 className="mt-3 max-w-xl font-display text-3xl text-navy md:text-4xl">
-            Projetos que falam por si
-          </h2>
-        </Reveal>
+      <div ref={containerRef} className="mx-auto max-w-6xl px-6 md:px-10">
+        <h2 className="max-w-xl font-display text-3xl text-navy md:text-4xl">
+          Projetos que falam por si
+        </h2>
 
         {images.length === 0 ? (
           <div className="mt-12 flex h-64 items-center justify-center border border-dashed border-beige bg-beige/30 text-sm text-stone">
@@ -27,48 +47,43 @@ export function Gallery({ images }: { images: ImageAsset[] }) {
           </div>
         ) : (
           <div className="mt-12 grid grid-cols-2 gap-3 md:grid-cols-3 md:gap-4">
-            {images.map((image, i) => (
-              <Reveal
+            {images.map((image) => (
+              <button
                 key={image.src}
-                delay={(i % 6) * 0.05}
-                className={
-                  image.shape === "portrait" ? "row-span-2" : undefined
+                type="button"
+                onClick={() =>
+                  open(
+                    <div className="flex flex-col items-center gap-3">
+                      <Image
+                        src={image.src}
+                        alt="Projeto Sognare em detalhe"
+                        width={image.width}
+                        height={image.height}
+                        className="max-h-[75vh] w-auto object-contain"
+                      />
+                      <p className="text-sm text-cream/80">
+                        Projeto assinado pela Sognare
+                      </p>
+                    </div>,
+                  )
                 }
+                className={`gallery-card group relative block aspect-square w-full overflow-hidden bg-beige ${
+                  image.shape === "portrait" ? "row-span-2" : ""
+                }`}
               >
-                <button
-                  type="button"
-                  onClick={() =>
-                    open(
-                      <div className="flex flex-col items-center gap-3">
-                        <Image
-                          src={image.src}
-                          alt="Projeto Sognare em detalhe"
-                          width={image.width}
-                          height={image.height}
-                          className="max-h-[75vh] w-auto object-contain"
-                        />
-                        <p className="text-sm text-cream/80">
-                          Projeto assinado pela Sognare
-                        </p>
-                      </div>,
-                    )
-                  }
-                  className="group relative block aspect-square w-full overflow-hidden bg-beige"
-                >
-                  <Image
-                    src={image.src}
-                    alt="Ambiente planejado pela Sognare"
-                    fill
-                    sizes="(max-width: 768px) 50vw, 33vw"
-                    className="object-cover transition-transform duration-500 group-hover:scale-105"
-                  />
-                  <div className="absolute inset-0 flex items-end bg-gradient-to-t from-navy/60 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-                    <span className="p-4 text-xs uppercase tracking-widest text-cream">
-                      Ver projeto
-                    </span>
-                  </div>
-                </button>
-              </Reveal>
+                <Image
+                  src={image.src}
+                  alt="Ambiente planejado pela Sognare"
+                  fill
+                  sizes="(max-width: 768px) 50vw, 33vw"
+                  className="object-cover transition-transform duration-500 group-hover:scale-105"
+                />
+                <div className="absolute inset-0 flex items-end bg-gradient-to-t from-navy/60 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+                  <span className="p-4 text-xs uppercase tracking-widest text-cream">
+                    Ver projeto
+                  </span>
+                </div>
+              </button>
             ))}
           </div>
         )}

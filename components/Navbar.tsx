@@ -2,8 +2,9 @@
 
 import { useEffect, useState } from "react";
 import Image from "next/image";
-import { brand } from "@/content/site";
+import { brand, contact } from "@/content/site";
 import { WhatsappButton } from "./WhatsappButton";
+import { InstagramIcon } from "./icons";
 
 const links = [
   { href: "#projetos", label: "Projetos" },
@@ -36,20 +37,20 @@ export function Navbar() {
       <nav className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4 md:px-10">
         <a
           href="#topo"
-          className="flex items-center gap-3 font-display text-xl tracking-wide text-cream"
+          className="flex items-center gap-3 font-display text-2xl tracking-wide text-cream"
         >
           <Image
             src="/brand/logo-256.png"
             alt={`${brand.fullName} — logo`}
-            width={36}
-            height={36}
+            width={56}
+            height={56}
             priority
-            className="h-9 w-9"
+            className="h-12 w-12 rounded-full md:h-14 md:w-14"
           />
           {brand.name}
         </a>
 
-        <div className="hidden items-center gap-8 md:flex">
+        <div className="hidden items-center gap-6 md:flex">
           {links.map((link) => (
             <a
               key={link.href}
@@ -59,6 +60,15 @@ export function Navbar() {
               {link.label}
             </a>
           ))}
+          <a
+            href={contact.instagramUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label={`Instagram da ${brand.name}`}
+            className="text-cream/80 transition-colors hover:text-cream"
+          >
+            <InstagramIcon />
+          </a>
           <WhatsappButton
             label="Orçamento"
             className="px-5 py-2 text-xs uppercase tracking-widest"
@@ -96,6 +106,15 @@ export function Navbar() {
               {link.label}
             </a>
           ))}
+          <a
+            href={contact.instagramUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-2 py-3 text-base text-cream/90"
+          >
+            <InstagramIcon />
+            Instagram
+          </a>
           <WhatsappButton
             label="Solicitar orçamento"
             className="mt-3 w-full justify-center"

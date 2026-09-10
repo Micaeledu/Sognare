@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useSyncExternalStore } from "react";
 
 const STORAGE_KEY = "sognare-cookie-consent";
 export type ConsentValue = "accepted" | "declined";
@@ -14,21 +14,37 @@ export function getStoredConsent(): ConsentValue | null {
   }
 }
 
+function subscribeToStorage(callback: () => void) {
+  window.addEventListener("storage", callback);
+  return () => window.removeEventListener("storage", callback);
+}
+
+function getServerConsentSnapshot(): ConsentValue | null {
+  return null;
+}
+
 export function CookieConsent({
   onChange,
 }: {
   onChange: (consent: ConsentValue) => void;
 }) {
-  const [consent, setConsent] = useState<ConsentValue | null>(() =>
-    getStoredConsent(),
+  // useSyncExternalStore lida com a diferença entre servidor (sem
+  // localStorage) e cliente sem gerar erro de hidratação — no servidor
+  // sempre "null" (banner visível), no cliente troca para o valor real
+  // assim que monta.
+  const storedConsent = useSyncExternalStore(
+    subscribeToStorage,
+    getStoredConsent,
+    getServerConsentSnapshot,
   );
+  // Escolha feita nesta sessão tem prioridade e some o banner na hora,
+  // sem esperar o evento "storage" (que só dispara em outras abas).
+  const [localChoice, setLocalChoice] = useState<ConsentValue | null>(null);
+  const consent = localChoice ?? storedConsent;
 
   useEffect(() => {
     if (consent) onChange(consent);
-    // Só precisa informar o pai quando já existia um consentimento salvo
-    // no primeiro render; escolhas feitas depois passam por choose() abaixo.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [consent, onChange]);
 
   function choose(value: ConsentValue) {
     try {
@@ -36,8 +52,7 @@ export function CookieConsent({
     } catch {
       // localStorage indisponível (modo privado, etc.) — segue sem persistir.
     }
-    setConsent(value);
-    onChange(value);
+    setLocalChoice(value);
   }
 
   if (consent) return null;

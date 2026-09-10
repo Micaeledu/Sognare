@@ -129,11 +129,87 @@ export type Testimonial = {
   quote: string;
 };
 
-// Nenhum depoimento em texto solto por enquanto — a prova social real já
-// está nos prints de public/media/avaliacoes (Testimonials os renderiza
-// automaticamente). Preencha este array se a Sognare quiser destacar algum
-// depoimento em texto além dos prints.
-export const textTestimonials: Testimonial[] = [];
+// REAL — transcritos dos comentários públicos reais no Instagram
+// @sognareambientes (prints originais guardados em public/media/avaliacoes,
+// não exibidos no site por ficarem com aparência de captura de tela ao
+// lado do resto do design). Limpo apenas pontuação/emoji repetido, sem
+// alterar o sentido do que cada cliente escreveu.
+export const textTestimonials: Testimonial[] = [
+  {
+    author: "Anderson Sobral",
+    quote:
+      "Vocês são excepcionalmente os melhores. Pessoal super atencioso e educado, material de excelente qualidade. Estamos muito satisfeitos com o trabalho de vocês.",
+  },
+  {
+    author: "Gildo Queiroz",
+    quote:
+      "Quer ter seus móveis planejados sem dor de cabeça? Pode contratar a Sognare — profissionais competentes, material de primeira. Essa empresa eu recomendo.",
+  },
+  {
+    author: "Lilian Matos",
+    project: "um ano após a instalação",
+    quote:
+      "Um ano de instalado e a qualidade se mantém a mesma. Parabéns pelo trabalho — todos que compõem a empresa são de excelência.",
+  },
+  {
+    author: "Michele Santana",
+    quote:
+      "Padrão de excelência! Ficou lindo demais, parabéns para essa equipe dedicada e atenciosa. Fiquei super satisfeita, recomendo a todos.",
+  },
+  {
+    author: "Megghy Ribeiro",
+    project: "projeto de sala",
+    quote:
+      "Perfeição — até hoje estou encantada com minha sala. Obrigada a você e sua equipe, Rafael. Minha eterna gratidão.",
+  },
+  {
+    author: "Joana Curvelo",
+    project: "arquiteta parceira",
+    quote: "Obrigada pela execução incrível!",
+  },
+  {
+    author: "Vania Santana",
+    quote:
+      "A excelente execução da Sognare garantiu o resultado positivo, e destaco também o cumprimento do prazo. Recomendo!",
+  },
+];
+
+export type FaqItem = { question: string; answer: string };
+
+// PLACEHOLDER — perguntas comuns de marcenaria sob medida; confirmar
+// respostas exatas (prazos, garantia, área de atendimento) com a Sognare.
+export const faqItems: FaqItem[] = [
+  {
+    question: "O orçamento tem algum custo ou compromisso?",
+    answer:
+      "Não. A visita técnica e o orçamento são gratuitos e sem compromisso — você só decide depois de ver o projeto.",
+  },
+  {
+    question: "Quanto tempo leva um projeto, da medição à instalação?",
+    answer:
+      "Varia com o tamanho do ambiente, mas o prazo é combinado por escrito antes de começar a produção, para não haver surpresa.",
+  },
+  {
+    question: "Vocês atendem em qual região?",
+    answer: `Atendemos ${brand.city} e região metropolitana.`,
+  },
+  {
+    question: "Os móveis têm garantia?",
+    answer:
+      "Sim, todo projeto sai com garantia contra defeitos de fabricação e instalação.",
+  },
+  {
+    question: "Posso escolher os materiais e acabamentos?",
+    answer:
+      "Sim — a curadoria de madeiras, cores e ferragens é feita junto com você durante o projeto.",
+  },
+];
+
+export const instagramContent = {
+  title: "Acompanhe os projetos no Instagram",
+  subtitle: `Bastidores de produção, entregas e depoimentos em vídeo — tudo em ${brand.instagramHandle}.`,
+  cta: "Seguir no Instagram",
+} as const;
 
 export const finalCta = {
   title: "Vamos desenhar o seu próximo ambiente?",

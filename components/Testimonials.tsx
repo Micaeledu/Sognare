@@ -1,82 +1,119 @@
 "use client";
 
+import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
+import { gsap } from "@/lib/gsap";
 import { textTestimonials } from "@/content/site";
 import type { ImageAsset } from "@/lib/media";
-import { useLightbox } from "./Lightbox";
-import { Reveal } from "./Reveal";
 
-export function Testimonials({ avaliacoes }: { avaliacoes: ImageAsset[] }) {
-  const { open } = useLightbox();
+const ROTATE_MS = 6000;
 
-  if (avaliacoes.length === 0 && textTestimonials.length === 0) return null;
+export function Testimonials({
+  serviceImage,
+}: {
+  serviceImage: ImageAsset | null;
+}) {
+  const [activeIndex, setActiveIndex] = useState(0);
+  const quoteRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const paused = useRef(false);
+
+  useEffect(() => {
+    if (textTestimonials.length < 2) return;
+    const id = setInterval(() => {
+      if (!paused.current) setActiveIndex((i) => (i + 1) % textTestimonials.length);
+    }, ROTATE_MS);
+    return () => clearInterval(id);
+  }, []);
+
+  useEffect(() => {
+    const reduceMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
+    quoteRefs.current.forEach((el, i) => {
+      if (!el) return;
+      gsap.to(el, {
+        opacity: i === activeIndex ? 1 : 0,
+        duration: reduceMotion ? 0 : 0.5,
+        ease: "power1.out",
+      });
+    });
+  }, [activeIndex]);
+
+  if (textTestimonials.length === 0) return null;
 
   return (
     <section className="bg-navy py-24 text-cream">
       <div className="mx-auto max-w-6xl px-6 md:px-10">
-        <Reveal>
-          <p className="text-xs uppercase tracking-[0.3em] text-tan-light">
-            Quem já confiou na Sognare
-          </p>
-          <h2 className="mt-3 max-w-xl font-display text-3xl md:text-4xl">
-            Depoimentos reais de clientes
-          </h2>
-        </Reveal>
+        <h2 className="max-w-xl font-display text-3xl md:text-4xl">
+          Depoimentos reais de clientes
+        </h2>
 
-        {avaliacoes.length > 0 && (
-          <Reveal delay={0.1}>
-            <div className="mt-12 -mx-6 flex snap-x snap-mandatory gap-5 overflow-x-auto px-6 pb-4 md:-mx-10 md:px-10">
-              {avaliacoes.map((item) => (
-                <button
-                  key={item.src}
-                  type="button"
-                  onClick={() =>
-                    open(
-                      <Image
-                        src={item.src}
-                        alt="Avaliação de cliente da Sognare"
-                        width={item.width}
-                        height={item.height}
-                        className="max-h-[85vh] w-auto object-contain"
-                      />,
-                    )
-                  }
-                  className="group relative shrink-0 snap-start overflow-hidden border border-cream/15 bg-cream p-2 shadow-xl transition-transform hover:-translate-y-1"
-                  style={{ height: "22rem" }}
-                >
-                  <Image
-                    src={item.src}
-                    alt="Avaliação de cliente da Sognare"
-                    width={item.width}
-                    height={item.height}
-                    className="h-full w-auto object-contain"
-                  />
-                </button>
-              ))}
-            </div>
-            <p className="mt-3 text-xs text-cream/50">
-              Arraste para o lado para ver mais avaliações →
+        <div className="mt-12 grid grid-cols-1 gap-10 md:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)] md:items-stretch">
+          <div className="relative hidden min-h-[22rem] overflow-hidden md:block">
+            {serviceImage ? (
+              <Image
+                src={serviceImage.src}
+                alt="Marcenaria de acabamento fino assinada pela Sognare"
+                fill
+                sizes="40vw"
+                className="object-cover"
+              />
+            ) : (
+              <div className="absolute inset-0 bg-gradient-to-br from-tan/30 to-navy-deep" />
+            )}
+            <div className="absolute inset-0 bg-gradient-to-t from-navy/70 via-transparent to-transparent" />
+            <p className="absolute bottom-5 left-5 right-5 text-sm text-cream/90">
+              Cada projeto passa pelas mãos da mesma equipe, do desenho à instalação.
             </p>
-          </Reveal>
-        )}
+          </div>
 
-        {textTestimonials.length > 0 && (
-          <div className="mt-14 grid grid-cols-1 gap-8 md:grid-cols-3">
-            {textTestimonials.map((t, i) => (
-              <Reveal key={t.author} delay={i * 0.08}>
-                <blockquote className="border-l-2 border-tan pl-5">
-                  <p className="text-sm italic leading-relaxed text-cream/85">
-                    “{t.quote}”
+          <div
+            className="relative flex min-h-[18rem] flex-col justify-center"
+            onMouseEnter={() => (paused.current = true)}
+            onMouseLeave={() => (paused.current = false)}
+          >
+            <span className="font-display text-6xl leading-none text-tan/50">
+              “
+            </span>
+            <div className="relative -mt-6">
+              {textTestimonials.map((t, i) => (
+                <div
+                  key={t.author}
+                  ref={(el) => {
+                    quoteRefs.current[i] = el;
+                  }}
+                  aria-hidden={i !== activeIndex}
+                  className={`${i === activeIndex ? "relative" : "absolute inset-0 pointer-events-none"}`}
+                  style={{ opacity: i === activeIndex ? 1 : 0 }}
+                >
+                  <p className="font-display text-xl leading-snug text-cream md:text-2xl">
+                    {t.quote}
                   </p>
-                  <footer className="mt-3 text-xs uppercase tracking-widest text-cream/60">
+                  <footer className="mt-5 text-sm uppercase tracking-widest text-cream/60">
                     {t.author}
                     {t.project ? ` — ${t.project}` : ""}
                   </footer>
-                </blockquote>
-              </Reveal>
-            ))}
+                </div>
+              ))}
+            </div>
+
+            {textTestimonials.length > 1 && (
+              <div className="mt-8 flex gap-2">
+                {textTestimonials.map((t, i) => (
+                  <button
+                    key={t.author}
+                    type="button"
+                    aria-label={`Ver depoimento de ${t.author}`}
+                    onClick={() => setActiveIndex(i)}
+                    className={`h-1.5 w-6 transition-colors ${
+                      i === activeIndex ? "bg-tan" : "bg-cream/25"
+                    }`}
+                  />
+                ))}
+              </div>
+            )}
           </div>
-        )}
+        </div>
       </div>
     </section>
   );

@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { brand, contact } from "@/content/site";
+import { InstagramIcon } from "./icons";
 
 export function Footer() {
   const year = new Date().getFullYear();
@@ -13,7 +14,7 @@ export function Footer() {
             alt={`${brand.fullName} — logo`}
             width={40}
             height={40}
-            className="h-10 w-10"
+            className="h-12 w-12 rounded-full"
           />
           <div>
             <p className="font-display text-2xl">{brand.name}</p>
@@ -28,9 +29,10 @@ export function Footer() {
             href={contact.instagramUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="transition-colors hover:text-navy"
+            className="flex items-center gap-2 font-medium text-navy transition-colors hover:text-tan"
           >
-            Instagram {brand.instagramHandle}
+            <InstagramIcon className="h-5 w-5" />
+            {brand.instagramHandle}
           </a>
           {contact.whatsappNumber && (
             <span>WhatsApp: +{contact.whatsappNumber}</span>
