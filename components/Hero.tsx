@@ -9,13 +9,16 @@ import { useLightbox } from "./Lightbox";
 
 export function Hero({
   image,
-  featuredVideo,
+  heroVideo,
+  narratedVideos,
 }: {
   image: ImageAsset | null;
-  featuredVideo: VideoAsset | null;
+  heroVideo: VideoAsset | null;
+  narratedVideos: VideoAsset[];
 }) {
   const reduceMotion = useReducedMotion();
   const { open } = useLightbox();
+  const watchVideo = narratedVideos[0] ?? null;
 
   const fadeUp = reduceMotion
     ? {}
@@ -27,10 +30,42 @@ export function Hero({
   return (
     <section
       id="topo"
-      className="relative flex min-h-[92vh] items-center overflow-hidden bg-charcoal text-cream"
+      className="relative flex min-h-[92vh] items-center overflow-hidden bg-navy text-cream"
     >
       <div className="absolute inset-0">
-        {image ? (
+        {heroVideo ? (
+          <>
+            {/* Vídeo só no desktop: em mobile priorizamos leveza e usamos a
+                imagem/poster estática abaixo. Também respeita
+                prefers-reduced-motion não autoplayando o vídeo. */}
+            {!reduceMotion && (
+              <video
+                src={heroVideo.src}
+                poster={heroVideo.poster ?? undefined}
+                autoPlay
+                muted
+                loop
+                playsInline
+                preload="metadata"
+                className="hidden h-full w-full object-cover md:block"
+              />
+            )}
+            <div className="absolute inset-0 md:hidden">
+              {heroVideo.poster || image ? (
+                <Image
+                  src={heroVideo.poster ?? image!.src}
+                  alt="Ambiente planejado assinado pela Sognare"
+                  fill
+                  priority
+                  sizes="100vw"
+                  className="object-cover"
+                />
+              ) : (
+                <div className="absolute inset-0 bg-gradient-to-br from-navy via-tan/40 to-navy" />
+              )}
+            </div>
+          </>
+        ) : image ? (
           <Image
             src={image.src}
             alt="Ambiente planejado assinado pela Sognare"
@@ -40,16 +75,16 @@ export function Hero({
             className="object-cover opacity-60"
           />
         ) : (
-          <div className="absolute inset-0 bg-gradient-to-br from-charcoal via-wood/40 to-charcoal" />
+          <div className="absolute inset-0 bg-gradient-to-br from-navy via-tan/40 to-navy" />
         )}
-        <div className="absolute inset-0 bg-gradient-to-t from-charcoal via-charcoal/50 to-charcoal/20" />
+        <div className="absolute inset-0 bg-gradient-to-t from-navy via-navy/50 to-navy/20" />
       </div>
 
       <div className="relative mx-auto flex max-w-6xl flex-col items-start gap-8 px-6 py-32 md:px-10">
         <motion.p
           {...fadeUp}
           transition={{ duration: 0.6 }}
-          className="text-xs uppercase tracking-[0.3em] text-gold-light"
+          className="text-xs uppercase tracking-[0.3em] text-tan-light"
         >
           {heroContent.eyebrow}
         </motion.p>
@@ -83,13 +118,13 @@ export function Hero({
             {heroContent.secondaryCta}
           </a>
 
-          {featuredVideo && (
+          {watchVideo && (
             <button
               type="button"
               onClick={() =>
                 open(
                   <video
-                    src={featuredVideo.src}
+                    src={watchVideo.src}
                     controls
                     autoPlay
                     playsInline
@@ -97,7 +132,7 @@ export function Hero({
                   />,
                 )
               }
-              className="inline-flex items-center gap-2 text-sm text-cream/80 underline decoration-gold underline-offset-4 transition-colors hover:text-cream"
+              className="inline-flex items-center gap-2 text-sm text-cream/80 underline decoration-tan underline-offset-4 transition-colors hover:text-cream"
             >
               ▶ Assistir vídeo
             </button>

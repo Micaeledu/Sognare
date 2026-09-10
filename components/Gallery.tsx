@@ -12,10 +12,10 @@ export function Gallery({ images }: { images: ImageAsset[] }) {
     <section id="projetos" className="bg-cream py-24">
       <div className="mx-auto max-w-6xl px-6 md:px-10">
         <Reveal>
-          <p className="text-xs uppercase tracking-[0.3em] text-gold">
+          <p className="text-xs uppercase tracking-[0.3em] text-tan">
             Portfólio
           </p>
-          <h2 className="mt-3 max-w-xl font-display text-3xl text-charcoal md:text-4xl">
+          <h2 className="mt-3 max-w-xl font-display text-3xl text-navy md:text-4xl">
             Projetos que falam por si
           </h2>
         </Reveal>
@@ -62,7 +62,7 @@ export function Gallery({ images }: { images: ImageAsset[] }) {
                     sizes="(max-width: 768px) 50vw, 33vw"
                     className="object-cover transition-transform duration-500 group-hover:scale-105"
                   />
-                  <div className="absolute inset-0 flex items-end bg-gradient-to-t from-charcoal/60 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+                  <div className="absolute inset-0 flex items-end bg-gradient-to-t from-navy/60 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100">
                     <span className="p-4 text-xs uppercase tracking-widest text-cream">
                       Ver projeto
                     </span>

@@ -13,7 +13,7 @@ type Props = {
 const baseClasses =
   "inline-flex items-center justify-center gap-2 px-7 py-3.5 text-sm font-medium tracking-wide transition-colors";
 const variants = {
-  solid: "bg-gold text-charcoal hover:bg-gold-light",
+  solid: "bg-tan text-navy hover:bg-tan-light",
   outline:
     "border border-cream/40 text-cream hover:border-cream hover:bg-cream/5",
 };

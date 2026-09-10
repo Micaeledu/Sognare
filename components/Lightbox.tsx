@@ -49,7 +49,7 @@ export function LightboxProvider({ children }: { children: ReactNode }) {
           role="dialog"
           aria-modal="true"
           onClick={close}
-          className="fixed inset-0 z-50 flex items-center justify-center bg-charcoal/95 p-4 md:p-10"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-navy/95 p-4 md:p-10"
         >
           <button
             type="button"

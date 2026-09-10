@@ -22,6 +22,8 @@ export type ImageAsset = {
 export type VideoAsset = {
   src: string;
   filename: string;
+  /** primeiro frame gerado como poster, se `<nome>-poster.jpg` existir ao lado do vídeo */
+  poster: string | null;
 };
 
 function listFiles(dir: string, extensions: Set<string>): string[] {
@@ -79,10 +81,16 @@ export function getAvaliacaoManifest(): ImageAsset[] {
 
 export function getVideoManifest(): VideoAsset[] {
   const dir = path.join(MEDIA_ROOT, "videos");
-  return listFiles(dir, VIDEO_EXTENSIONS).map((filename) => ({
-    src: `/media/videos/${filename}`,
-    filename,
-  }));
+  return listFiles(dir, VIDEO_EXTENSIONS)
+    .map((filename) => {
+      const posterName = `${path.parse(filename).name}-poster.jpg`;
+      const hasPoster = fs.existsSync(path.join(dir, posterName));
+      return {
+        src: `/media/videos/${filename}`,
+        filename,
+        poster: hasPoster ? `/media/videos/${posterName}` : null,
+      };
+    });
 }
 
 export type SiteMedia = {
@@ -112,6 +120,19 @@ function isAboutPhoto(filename: string) {
 }
 
 /**
+ * Convenção opcional: um vídeo cujo nome contenha "hero" ou "loop" é tratado
+ * como b-roll ambiente (silencioso, em loop, fundo do hero). Qualquer outro
+ * vídeo é tratado como depoimento/institucional falado — vira card clicável
+ * que toca com som, em vez de virar fundo mudo (o que perderia a fala).
+ */
+const HERO_VIDEO_HINTS = ["hero", "loop"];
+
+function isHeroVideo(filename: string) {
+  const lower = filename.toLowerCase();
+  return HERO_VIDEO_HINTS.some((hint) => lower.includes(hint));
+}
+
+/**
  * Distribui as mídias encontradas em `public/media` pelas seções do site,
  * sem depender de nome de arquivo fixo (exceto a convenção opcional acima).
  * A imagem mais larga vira destaque do hero (ou fundo do hero, se não houver
@@ -121,7 +142,7 @@ function isAboutPhoto(filename: string) {
  */
 export function getSiteMedia(): SiteMedia {
   const allImages = getImageManifest();
-  const videos = getVideoManifest();
+  const allVideos = getVideoManifest();
   const avaliacoes = getAvaliacaoManifest();
 
   const aboutPhotos = allImages.filter((img) => isAboutPhoto(img.filename));
@@ -130,8 +151,10 @@ export function getSiteMedia(): SiteMedia {
 
   const images = allImages.filter((img) => img !== founderPhoto && !aboutPhotos.includes(img));
 
+  const heroVideo = allVideos.find((v) => isHeroVideo(v.filename)) ?? null;
+  const videos = allVideos.filter((v) => v !== heroVideo);
+
   const sortedByWidth = [...images].sort((a, b) => b.ratio - a.ratio);
-  const heroVideo = videos[0] ?? null;
   const heroImage = heroVideo ? null : (sortedByWidth[0] ?? null);
 
   const remaining = sortedByWidth.filter((img) => img !== heroImage);

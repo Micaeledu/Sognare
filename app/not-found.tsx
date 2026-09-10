@@ -3,8 +3,8 @@ import { brand } from "@/content/site";
 
 export default function NotFound() {
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center gap-6 bg-charcoal px-6 text-center text-cream">
-      <p className="font-display text-6xl text-gold-light">404</p>
+    <main className="flex min-h-screen flex-col items-center justify-center gap-6 bg-navy px-6 text-center text-cream">
+      <p className="font-display text-6xl text-tan-light">404</p>
       <h1 className="font-display text-2xl md:text-3xl">
         Essa página não existe.
       </h1>

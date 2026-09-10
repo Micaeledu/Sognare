@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Image from "next/image";
 import { brand } from "@/content/site";
 import { WhatsappButton } from "./WhatsappButton";
 
@@ -28,15 +29,23 @@ export function Navbar() {
     <header
       className={`fixed inset-x-0 top-0 z-30 transition-colors duration-300 ${
         scrolled || menuOpen
-          ? "bg-charcoal/95 backdrop-blur-sm"
+          ? "bg-navy/95 backdrop-blur-sm"
           : "bg-transparent"
       }`}
     >
       <nav className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4 md:px-10">
         <a
           href="#topo"
-          className="font-display text-xl tracking-wide text-cream"
+          className="flex items-center gap-3 font-display text-xl tracking-wide text-cream"
         >
+          <Image
+            src="/brand/logo-256.png"
+            alt={`${brand.fullName} — logo`}
+            width={36}
+            height={36}
+            priority
+            className="h-9 w-9"
+          />
           {brand.name}
         </a>
 

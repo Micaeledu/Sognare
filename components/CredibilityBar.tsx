@@ -10,7 +10,7 @@ export function CredibilityBar() {
         {credibilityStats.map((stat, i) => (
           <Reveal key={stat.label} delay={i * 0.1}>
             <div className="flex flex-col items-center gap-1 py-6 text-center sm:py-0">
-              <span className="font-display text-3xl text-wood md:text-4xl">
+              <span className="font-display text-3xl text-tan md:text-4xl">
                 {stat.value}
               </span>
               <span className="text-xs uppercase tracking-widest text-stone">

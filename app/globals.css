@@ -1,17 +1,16 @@
 @import "tailwindcss";
 
 /*
- * Paleta fixa da marca (luxo natural / madeira) — não alterna com o tema
- * claro/escuro do sistema, é a identidade visual da Sognare em qualquer
- * dispositivo.
+ * Paleta fixa da marca — extraída da logo real da Sognare (azul-marinho +
+ * bege). Não alterna com o tema claro/escuro do sistema, é a identidade
+ * visual da marca em qualquer dispositivo.
  */
 @theme {
   --color-cream: #f5f1ea;
-  --color-charcoal: #1c1a17;
-  --color-wood: #8a5a2b;
-  --color-wood-light: #a9763f;
-  --color-gold: #b8860b;
-  --color-gold-light: #c7a008;
+  --color-navy: #123249;
+  --color-navy-deep: #0b2334;
+  --color-tan: #ceb998;
+  --color-tan-light: #ddccb1;
   --color-beige: #e4dacb;
   --color-stone: #6e6a63;
 
@@ -39,20 +38,20 @@ html {
 
 body {
   background: var(--color-cream);
-  color: var(--color-charcoal);
+  color: var(--color-navy);
 }
 
 ::selection {
-  background: var(--color-gold);
-  color: var(--color-charcoal);
+  background: var(--color-tan);
+  color: var(--color-navy);
 }
 
-.gold-divider {
+.tan-divider {
   height: 1px;
   background: linear-gradient(
     90deg,
     transparent,
-    var(--color-gold) 50%,
+    var(--color-tan) 50%,
     transparent
   );
 }

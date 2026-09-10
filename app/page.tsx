@@ -17,7 +17,11 @@ export default function Home() {
     <>
       <Navbar />
       <main>
-        <Hero image={media.heroImage} featuredVideo={media.videos[0] ?? null} />
+        <Hero
+          image={media.heroImage}
+          heroVideo={media.heroVideo}
+          narratedVideos={media.videos}
+        />
         <CredibilityBar />
         <Gallery images={media.gallery} />
         <Services />

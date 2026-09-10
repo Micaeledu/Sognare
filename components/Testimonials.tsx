@@ -12,10 +12,10 @@ export function Testimonials({ avaliacoes }: { avaliacoes: ImageAsset[] }) {
   if (avaliacoes.length === 0 && textTestimonials.length === 0) return null;
 
   return (
-    <section className="bg-charcoal py-24 text-cream">
+    <section className="bg-navy py-24 text-cream">
       <div className="mx-auto max-w-6xl px-6 md:px-10">
         <Reveal>
-          <p className="text-xs uppercase tracking-[0.3em] text-gold-light">
+          <p className="text-xs uppercase tracking-[0.3em] text-tan-light">
             Quem já confiou na Sognare
           </p>
           <h2 className="mt-3 max-w-xl font-display text-3xl md:text-4xl">
@@ -24,10 +24,11 @@ export function Testimonials({ avaliacoes }: { avaliacoes: ImageAsset[] }) {
         </Reveal>
 
         {avaliacoes.length > 0 && (
-          <div className="mt-12 grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4">
-            {avaliacoes.map((item, i) => (
-              <Reveal key={item.src} delay={(i % 4) * 0.06}>
+          <Reveal delay={0.1}>
+            <div className="mt-12 -mx-6 flex snap-x snap-mandatory gap-5 overflow-x-auto px-6 pb-4 md:-mx-10 md:px-10">
+              {avaliacoes.map((item) => (
                 <button
+                  key={item.src}
                   type="button"
                   onClick={() =>
                     open(
@@ -40,27 +41,30 @@ export function Testimonials({ avaliacoes }: { avaliacoes: ImageAsset[] }) {
                       />,
                     )
                   }
-                  className="group relative block w-full overflow-hidden border border-cream/10 bg-cream shadow-lg transition-transform hover:-translate-y-1"
-                  style={{ aspectRatio: `${item.width} / ${item.height}` }}
+                  className="group relative shrink-0 snap-start overflow-hidden border border-cream/15 bg-cream p-2 shadow-xl transition-transform hover:-translate-y-1"
+                  style={{ height: "22rem" }}
                 >
                   <Image
                     src={item.src}
                     alt="Avaliação de cliente da Sognare"
-                    fill
-                    sizes="(max-width: 640px) 50vw, 25vw"
-                    className="object-cover object-top"
+                    width={item.width}
+                    height={item.height}
+                    className="h-full w-auto object-contain"
                   />
                 </button>
-              </Reveal>
-            ))}
-          </div>
+              ))}
+            </div>
+            <p className="mt-3 text-xs text-cream/50">
+              Arraste para o lado para ver mais avaliações →
+            </p>
+          </Reveal>
         )}
 
         {textTestimonials.length > 0 && (
           <div className="mt-14 grid grid-cols-1 gap-8 md:grid-cols-3">
             {textTestimonials.map((t, i) => (
               <Reveal key={t.author} delay={i * 0.08}>
-                <blockquote className="border-l-2 border-gold pl-5">
+                <blockquote className="border-l-2 border-tan pl-5">
                   <p className="text-sm italic leading-relaxed text-cream/85">
                     “{t.quote}”
                   </p>

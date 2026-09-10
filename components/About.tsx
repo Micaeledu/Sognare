@@ -23,19 +23,29 @@ function VideoCard({ video, label }: { video: VideoAsset; label: string }) {
           />,
         )
       }
-      className="group relative flex h-40 w-28 shrink-0 items-center justify-center overflow-hidden bg-charcoal md:h-52 md:w-36"
+      className="group relative flex h-40 w-28 shrink-0 items-center justify-center overflow-hidden bg-navy md:h-52 md:w-36"
     >
-      <video
-        src={video.src}
-        muted
-        playsInline
-        preload="metadata"
-        className="absolute inset-0 h-full w-full object-cover opacity-70 transition-opacity group-hover:opacity-90"
-      />
-      <span className="relative flex h-10 w-10 items-center justify-center rounded-full bg-gold/90 text-charcoal">
+      {video.poster ? (
+        <Image
+          src={video.poster}
+          alt={label}
+          fill
+          sizes="144px"
+          className="object-cover opacity-70 transition-opacity group-hover:opacity-90"
+        />
+      ) : (
+        <video
+          src={video.src}
+          muted
+          playsInline
+          preload="metadata"
+          className="absolute inset-0 h-full w-full object-cover opacity-70 transition-opacity group-hover:opacity-90"
+        />
+      )}
+      <span className="relative flex h-10 w-10 items-center justify-center rounded-full bg-tan/90 text-navy">
         ▶
       </span>
-      <span className="absolute inset-x-0 bottom-0 bg-charcoal/70 px-2 py-1.5 text-center text-[11px] leading-tight text-cream">
+      <span className="absolute inset-x-0 bottom-0 bg-navy/70 px-2 py-1.5 text-center text-[11px] leading-tight text-cream">
         {label}
       </span>
     </button>
@@ -63,16 +73,16 @@ export function About({
                 className="object-cover"
               />
             ) : (
-              <div className="absolute inset-0 bg-gradient-to-br from-wood to-charcoal" />
+              <div className="absolute inset-0 bg-gradient-to-br from-tan to-navy" />
             )}
           </div>
         </Reveal>
 
         <Reveal delay={0.1}>
-          <p className="text-xs uppercase tracking-[0.3em] text-gold">
+          <p className="text-xs uppercase tracking-[0.3em] text-tan">
             O ateliê
           </p>
-          <h2 className="mt-3 font-display text-3xl text-charcoal md:text-4xl">
+          <h2 className="mt-3 font-display text-3xl text-navy md:text-4xl">
             {aboutContent.title}
           </h2>
           {aboutContent.paragraphs.map((p) => (
@@ -83,7 +93,7 @@ export function About({
               {p}
             </p>
           ))}
-          <p className="mt-4 text-sm font-medium text-charcoal">
+          <p className="mt-4 text-sm font-medium text-navy">
             {aboutContent.founderNote}
           </p>
 

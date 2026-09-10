@@ -4,8 +4,8 @@ import { WhatsappButton } from "./WhatsappButton";
 
 export function FinalCta() {
   return (
-    <section id="contato" className="relative overflow-hidden bg-charcoal py-28 text-cream">
-      <div className="gold-divider absolute inset-x-0 top-0" />
+    <section id="contato" className="relative overflow-hidden bg-navy py-28 text-cream">
+      <div className="tan-divider absolute inset-x-0 top-0" />
       <div className="mx-auto max-w-3xl px-6 text-center md:px-10">
         <Reveal>
           <h2 className="font-display text-3xl md:text-5xl">
@@ -19,7 +19,7 @@ export function FinalCta() {
           </div>
         </Reveal>
       </div>
-      <div className="gold-divider absolute inset-x-0 bottom-0" />
+      <div className="tan-divider absolute inset-x-0 bottom-0" />
     </section>
   );
 }
