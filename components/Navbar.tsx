@@ -37,7 +37,7 @@ export function Navbar() {
       <nav className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4 md:px-10">
         <a
           href="#topo"
-          className="flex items-center gap-3 font-display text-2xl tracking-wide text-cream"
+          className="flex items-center gap-3 font-display text-xl tracking-wide text-cream"
         >
           <Image
             src="/brand/logo-256.png"
@@ -45,7 +45,7 @@ export function Navbar() {
             width={56}
             height={56}
             priority
-            className="h-12 w-12 rounded-full md:h-14 md:w-14"
+            className="h-9 w-9 rounded-full"
           />
           {brand.name}
         </a>

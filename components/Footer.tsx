@@ -14,7 +14,7 @@ export function Footer() {
             alt={`${brand.fullName} — logo`}
             width={40}
             height={40}
-            className="h-12 w-12 rounded-full"
+            className="h-9 w-9 rounded-full"
           />
           <div>
             <p className="font-display text-2xl">{brand.name}</p>

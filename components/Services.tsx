@@ -84,7 +84,7 @@ export function Services({ images }: { images: ImageAsset[] }) {
         { xPercent: -50 },
         {
           xPercent: 0,
-          duration: services.length * 5,
+          duration: services.length * 3,
           ease: "none",
           repeat: -1,
         },

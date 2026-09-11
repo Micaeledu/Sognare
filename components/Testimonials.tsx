@@ -2,7 +2,6 @@
 
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
-import { gsap } from "@/lib/gsap";
 import { textTestimonials } from "@/content/site";
 import type { ImageAsset } from "@/lib/media";
 
@@ -14,7 +13,6 @@ export function Testimonials({
   serviceImage: ImageAsset | null;
 }) {
   const [activeIndex, setActiveIndex] = useState(0);
-  const quoteRefs = useRef<(HTMLDivElement | null)[]>([]);
   const paused = useRef(false);
 
   useEffect(() => {
@@ -24,20 +22,6 @@ export function Testimonials({
     }, ROTATE_MS);
     return () => clearInterval(id);
   }, []);
-
-  useEffect(() => {
-    const reduceMotion = window.matchMedia(
-      "(prefers-reduced-motion: reduce)",
-    ).matches;
-    quoteRefs.current.forEach((el, i) => {
-      if (!el) return;
-      gsap.to(el, {
-        opacity: i === activeIndex ? 1 : 0,
-        duration: reduceMotion ? 0 : 0.5,
-        ease: "power1.out",
-      });
-    });
-  }, [activeIndex]);
 
   if (textTestimonials.length === 0) return null;
 
@@ -75,16 +59,19 @@ export function Testimonials({
             <span className="font-display text-6xl leading-none text-tan/50">
               “
             </span>
-            <div className="relative -mt-6">
+            <div className="relative -mt-6 h-64 overflow-hidden md:h-52">
               {textTestimonials.map((t, i) => (
                 <div
                   key={t.author}
-                  ref={(el) => {
-                    quoteRefs.current[i] = el;
-                  }}
                   aria-hidden={i !== activeIndex}
-                  className={`${i === activeIndex ? "relative" : "absolute inset-0 pointer-events-none"}`}
-                  style={{ opacity: i === activeIndex ? 1 : 0 }}
+                  // Crossfade em CSS puro (transition-opacity), sem GSAP: é só
+                  // uma troca de opacidade simples, e uma tentativa anterior
+                  // controlando isso via GSAP ficava com citações sobrepostas
+                  // (a animação nunca "assentava" num estado limpo). CSS
+                  // transition resolve isso sem essa complexidade.
+                  className={`absolute inset-0 transition-opacity duration-500 ease-out motion-reduce:transition-none ${
+                    i === activeIndex ? "opacity-100" : "pointer-events-none opacity-0"
+                  }`}
                 >
                   <p className="font-display text-xl leading-snug text-cream md:text-2xl">
                     {t.quote}
