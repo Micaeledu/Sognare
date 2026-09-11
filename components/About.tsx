@@ -70,7 +70,7 @@ export function About({
                 alt={`${aboutContent.founderNote}`}
                 fill
                 sizes="(max-width: 768px) 100vw, 480px"
-                className="object-cover"
+                className="object-cover object-top"
               />
             ) : (
               <div className="absolute inset-0 bg-gradient-to-br from-tan to-navy" />
