@@ -218,7 +218,11 @@ export const finalCta = {
 } as const;
 
 export const contact = {
-  whatsappNumber: process.env.NEXT_PUBLIC_WHATSAPP ?? "",
+  // Número real da Sognare como padrão — não é segredo (é o mesmo número
+  // que aparece no perfil do Instagram), então funciona mesmo sem
+  // configurar a variável de ambiente na Vercel. A env var continua
+  // funcionando se um dia precisar trocar sem mexer no código.
+  whatsappNumber: process.env.NEXT_PUBLIC_WHATSAPP ?? "5571991379938",
   instagramUrl:
     process.env.NEXT_PUBLIC_INSTAGRAM_URL ?? brand.instagramUrl,
   whatsappMessage:
