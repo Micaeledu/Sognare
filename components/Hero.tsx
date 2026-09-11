@@ -30,7 +30,7 @@ export function Hero({
   return (
     <section
       id="topo"
-      className="relative flex min-h-[92vh] items-center overflow-hidden bg-navy text-cream"
+      className="relative flex min-h-screen items-center overflow-hidden bg-navy text-cream"
     >
       <div className="absolute inset-0">
         {heroVideo ? (
